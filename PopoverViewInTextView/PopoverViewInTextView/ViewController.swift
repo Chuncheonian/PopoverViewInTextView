@@ -8,7 +8,7 @@
 import UIKit
 
 final class ViewController: UIViewController {
-
+    
     private lazy var button: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("화면 이동", for: .normal)
@@ -34,6 +34,4 @@ final class ViewController: UIViewController {
         navi.modalPresentationStyle = .fullScreen
         present(navi, animated: true)
     }
-    
 }
-

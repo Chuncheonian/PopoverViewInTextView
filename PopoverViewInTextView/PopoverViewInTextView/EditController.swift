@@ -32,6 +32,7 @@ final class EditController: UIViewController {
         textView.keyboardType = .default
         textView.becomeFirstResponder()
         textView.delegate = self
+        textView.text = "기존의 댓글"
         return textView
     }()
     
@@ -39,22 +40,10 @@ final class EditController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
-        navigationItem.title = "댓글 수정"
-        navigationItem.leftBarButtonItem = cancelButton
-        navigationItem.rightBarButtonItem = doneButton
+        setUpUI()
         
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        view.addSubview(textView)
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            textView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            textView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-        ])
     }
 }
 
@@ -62,10 +51,10 @@ extension EditController {
     @objc
     private func adjustForKeyboard(_ notification: Notification) {
         guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-
+        
         let keyboardScreenEndFrame = keyboardValue.cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
-
+        
         keyboardHeight = keyboardViewEndFrame.height
         
         if notification.name == UIResponder.keyboardWillHideNotification {
@@ -73,9 +62,9 @@ extension EditController {
         } else {
             textView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
         }
-
+        
         textView.scrollIndicatorInsets = textView.contentInset
-
+        
         let selectedRange = textView.selectedRange
         textView.scrollRangeToVisible(selectedRange)
     }
@@ -122,7 +111,7 @@ extension EditController: UITextViewDelegate {
         let firstRect = textView.firstRect(for: cursorTextRange)
         
         let floatingView = FloatingView()
-        let floatingViewWidth: CGFloat = textView.frame.width * 0.77
+        let floatingViewWidth: CGFloat = textView.frame.width * 0.84
         let floatingViewHeight: CGFloat = (textView.frame.height - keyboardHeight - sentenceHeight) * 0.48
         
         floatingView.preferredContentSize = .init(width: floatingViewWidth, height: floatingViewHeight)
@@ -135,20 +124,27 @@ extension EditController: UITextViewDelegate {
         // floatingView.popoverPresentationController?.canOverlapSourceViewRect = true
         
         /// navi 모달 스타일이 pageSheet일 때 12(기기마다 달라짐;)를 줘야 된다.
-        floatingView.popoverPresentationController?.popoverLayoutMargins = .init(top: naviBarHeight, left: 16, bottom: -window.safeAreaInsets.bottom, right: 16)
+        floatingView.popoverPresentationController?.popoverLayoutMargins = .init(
+            top: naviBarHeight,
+            left: window.directionalLayoutMargins.leading * 2,
+            bottom: -window.safeAreaInsets.bottom,
+            right: window.directionalLayoutMargins.trailing * 2
+        )
         
         /// scroll 해도 popUpView 안사라짐
         // floatingView.popoverPresentationController?.passthroughViews = [textView]
         
         // TODO: 재 수정 해야됨
-        let isUpPosition: Bool = (firstRect.origin.y - textView.contentOffset.y) < (textView.frame.height - keyboardHeight - floatingViewHeight)
+        let isPopoverViewDownPosition: Bool = (firstRect.origin.y - textView.contentOffset.y) < (textView.frame.height - keyboardHeight - floatingViewHeight)
         
         floatingView.popoverPresentationController?.popoverBackgroundViewClass = PopoverbackgroundView.self
         
-        if isUpPosition {
-            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y + sentenceHeight + 5, width: floatingViewWidth, height: floatingViewHeight)
+        let cursorPopoverViewSpacing: CGFloat = 5
+        
+        if isPopoverViewDownPosition {
+            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y + sentenceHeight + cursorPopoverViewSpacing, width: floatingViewWidth, height: floatingViewHeight)
         } else {
-            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y - 5, width: floatingViewWidth, height: -floatingViewHeight)
+            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y - cursorPopoverViewSpacing, width: floatingViewWidth, height: -floatingViewHeight)
         }
         
         present(floatingView, animated: true)
@@ -158,5 +154,34 @@ extension EditController: UITextViewDelegate {
 extension EditController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
+    }
+}
+
+extension EditController {
+    private func setUpUI() {
+        setUpView()
+        setUpNavi()
+        setUpComponents()
+    }
+    
+    private func setUpView() {
+        view.backgroundColor = .white
+    }
+    
+    private func setUpNavi() {
+        navigationItem.title = "댓글 수정"
+        navigationItem.leftBarButtonItem = cancelButton
+        navigationItem.rightBarButtonItem = doneButton
+    }
+    
+    private func setUpComponents() {
+        view.addSubview(textView)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            textView.topAnchor.constraint(equalTo: view.readableContentGuide.topAnchor),
+            textView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            textView.bottomAnchor.constraint(equalTo: view.readableContentGuide.bottomAnchor),
+            textView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
+        ])
     }
 }
