@@ -35,6 +35,8 @@ final class EditController: UIViewController {
         return textView
     }()
     
+    private var keyboardHeight: CGFloat = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -44,7 +46,6 @@ final class EditController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
         
         view.addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -65,6 +66,8 @@ extension EditController {
         let keyboardScreenEndFrame = keyboardValue.cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
 
+        keyboardHeight = keyboardViewEndFrame.height
+        
         if notification.name == UIResponder.keyboardWillHideNotification {
             textView.contentInset = .zero
         } else {
@@ -105,55 +108,48 @@ extension EditController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         guard let lastInputStr = (textView.text as NSString).substring(to: textView.selectedRange.location).last,
               lastInputStr == "@",
-              let cursorTextRange = textView.selectedTextRange
+              let cursorTextRange = textView.selectedTextRange,
+              let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first
         else {
             self.presentedViewController?.dismiss(animated: true)
             return
         }
         
-        // let position = textView.endOfDocument
-        // let caret = textView.caretRect(for: position)
+        let naviBarHeight: CGFloat = self.navigationController?.navigationBar.frame.height ?? 56
+        let sentenceHeight: CGFloat = 20
         
         let firstRect = textView.firstRect(for: cursorTextRange)
         
         let floatingView = FloatingView()
-        let floatingViewWidth: CGFloat = 300
-        let floatingViewHeight: CGFloat = 150
+        let floatingViewWidth: CGFloat = textView.frame.width * 0.77
+        let floatingViewHeight: CGFloat = (textView.frame.height - keyboardHeight - sentenceHeight) * 0.48
+        
         floatingView.preferredContentSize = .init(width: floatingViewWidth, height: floatingViewHeight)
         floatingView.modalPresentationStyle = .popover
+        floatingView.popoverPresentationController?.delegate = self
         floatingView.popoverPresentationController?.sourceView = textView
         
         /// 말풍선 arrow 삭제
         floatingView.popoverPresentationController?.permittedArrowDirections = []
-//        floatingView.popoverPresentationController?.canOverlapSourceViewRect = true
+        // floatingView.popoverPresentationController?.canOverlapSourceViewRect = true
         
-        /// bottom 44는 navigationbar Height
-        /// top 44는 navi 모달 스타일이 fullScreent일 때 충족
-        /// 반면, navi 모달 스타일이 pageSheet일 때 top 마진을 67 줘야된다
-        floatingView.popoverPresentationController?.popoverLayoutMargins = .init(top: 67, left: 16, bottom: -44, right: 16)
+        /// navi 모달 스타일이 pageSheet일 때 12(기기마다 달라짐;)를 줘야 된다.
+        floatingView.popoverPresentationController?.popoverLayoutMargins = .init(top: naviBarHeight, left: 16, bottom: -window.safeAreaInsets.bottom, right: 16)
         
         /// scroll 해도 popUpView 안사라짐
-        //floatingView.popoverPresentationController?.passthroughViews = [textView]
+        // floatingView.popoverPresentationController?.passthroughViews = [textView]
         
-        let sentenceHeight: CGFloat = 55
+        // TODO: 재 수정 해야됨
+        let isUpPosition: Bool = (firstRect.origin.y - textView.contentOffset.y) < (textView.frame.height - keyboardHeight - floatingViewHeight)
         
-        var isUpPosition: Bool
-        
-        // TODO: 165도 floatingView Height와 textView Height에 맞춰서 변경해야됨
-        if textView.contentOffset.y == 0 {
-            isUpPosition = firstRect.origin.y < 165
-        } else {
-            isUpPosition = (firstRect.origin.y - textView.contentOffset.y) < 165
-        }
+        floatingView.popoverPresentationController?.popoverBackgroundViewClass = PopoverbackgroundView.self
         
         if isUpPosition {
-            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y, width: floatingViewWidth, height: floatingViewHeight + sentenceHeight)
+            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y + sentenceHeight + 5, width: floatingViewWidth, height: floatingViewHeight)
         } else {
-            // TODO: 10에 의미있는 값을 넣어야되는데.....
-            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y, width: floatingViewWidth, height: -floatingViewHeight + 10)
+            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y - 5, width: floatingViewWidth, height: -floatingViewHeight)
         }
-        
-        floatingView.popoverPresentationController?.delegate = self
         
         present(floatingView, animated: true)
     }
@@ -163,5 +159,4 @@ extension EditController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
-    
 }

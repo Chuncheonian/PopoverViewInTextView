@@ -31,7 +31,7 @@ final class ViewController: UIViewController {
     private func handleButtonTapped() {
         let editVC = EditController()
         let navi = UINavigationController(rootViewController: editVC)
-        navi.modalPresentationStyle = .pageSheet
+        navi.modalPresentationStyle = .fullScreen
         present(navi, animated: true)
     }
     
