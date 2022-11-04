@@ -16,7 +16,6 @@ final class ViewController: UIViewController {
         return button
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -28,13 +27,11 @@ final class ViewController: UIViewController {
         ])
     }
     
-    
-
     @objc
     private func handleButtonTapped() {
         let editVC = EditController()
         let navi = UINavigationController(rootViewController: editVC)
-//        navi.modalPresentationStyle = .fullScreen
+        navi.modalPresentationStyle = .pageSheet
         present(navi, animated: true)
     }
     

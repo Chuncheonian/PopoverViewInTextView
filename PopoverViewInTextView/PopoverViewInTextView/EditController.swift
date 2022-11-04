@@ -126,28 +126,32 @@ extension EditController: UITextViewDelegate {
         
 //        let b = textView.firstRect(for: a)
         
+        
         let floatingView = FloatingView()
+        let floatingViewWidth: CGFloat = 300
+        let floatingViewHeight: CGFloat = 150
         floatingView.modalPresentationStyle = .popover
-        floatingView.preferredContentSize = .init(width: 300, height: 150)
-//        floatingView.preferredContentSize = .init(width: firstRect.width, height: firstRect.height)
+        floatingView.preferredContentSize = .init(width: floatingViewWidth, height: floatingViewHeight)
         floatingView.popoverPresentationController?.sourceView = textView
         floatingView.popoverPresentationController?.permittedArrowDirections = []
-        // floatingView.popoverPresentationController?.passthroughViews = [textView]
-//        c.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-//        c.popoverPresentationController?.sourceRect = .init(x: b.origin.x, y: b.origin.y + 25, width: 300, height: 150)
-//        c.popoverPresentationController?.sourceRect = .init(x: caret.origin.x, y: caret.origin.y + 25, width: 300, height: 150)
+        floatingView.popoverPresentationController?.canOverlapSourceViewRect = true
+        /// bottom 44는 navigationbar Height
+        /// top 44는 navi 모달 스타일이 fullScreent일 때 충족
+        /// 반면, navi 모달 스타일이 pageSheet일 때 top 마진을 67 줘야된다
+        floatingView.popoverPresentationController?.popoverLayoutMargins = .init(top: 67, left: 16, bottom: -44, right: 16)
+        floatingView.popoverPresentationController?.passthroughViews = [textView]
         
-//        floatingView.popoverPresentationController?.sourceRect = firstRect
-        
-//        print(view.superview?.convert(firstRect.origin, to: nil))
-        
-        var testBool: Bool = firstRect.height - firstRect.origin.y > 160
+//        var testBool: Bool = firstRect.height - firstRect.origin.y > 160
         print(firstRect.height, firstRect.origin.y)
-//        if firstRect.origin.y > 160 {
-        if testBool {
-            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y - 150, width: 300, height: 150)
+        
+        let sentenceHeight: CGFloat = 55
+        
+        /// 분기처리는 고쳐야 됨
+        if firstRect.origin.y > 160 {
+            // 10은 무슨 의미?, 의미있는 값을 넣어야되는데.....
+            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y, width: floatingViewWidth, height: -floatingViewHeight + 10)
         } else {
-            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y + 32, width: 300, height: 150)
+            floatingView.popoverPresentationController?.sourceRect = .init(x: firstRect.origin.x, y: firstRect.origin.y, width: floatingViewWidth, height: floatingViewHeight + sentenceHeight)
         }
         
         floatingView.popoverPresentationController?.delegate = self
