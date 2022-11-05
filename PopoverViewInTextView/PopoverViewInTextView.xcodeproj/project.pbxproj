@@ -13,8 +13,9 @@
 		76C713522914DC1A003B1BD2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76C713512914DC1A003B1BD2 /* Assets.xcassets */; };
 		76C713552914DC1A003B1BD2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76C713532914DC1A003B1BD2 /* LaunchScreen.storyboard */; };
 		76C7135D2914DC91003B1BD2 /* EditController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7135C2914DC91003B1BD2 /* EditController.swift */; };
-		76C7135F2914DCA1003B1BD2 /* FloatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7135E2914DCA1003B1BD2 /* FloatingView.swift */; };
+		76C7135F2914DCA1003B1BD2 /* PopoverTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7135E2914DCA1003B1BD2 /* PopoverTableView.swift */; };
 		76C71361291543C8003B1BD2 /* PopoverbackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C71360291543C7003B1BD2 /* PopoverbackgroundView.swift */; };
+		76C7136329156C50003B1BD2 /* PopoverUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7136229156C50003B1BD2 /* PopoverUserCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,8 +27,9 @@
 		76C713542914DC1A003B1BD2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76C713562914DC1A003B1BD2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76C7135C2914DC91003B1BD2 /* EditController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditController.swift; sourceTree = "<group>"; };
-		76C7135E2914DCA1003B1BD2 /* FloatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingView.swift; sourceTree = "<group>"; };
+		76C7135E2914DCA1003B1BD2 /* PopoverTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverTableView.swift; sourceTree = "<group>"; };
 		76C71360291543C7003B1BD2 /* PopoverbackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverbackgroundView.swift; sourceTree = "<group>"; };
+		76C7136229156C50003B1BD2 /* PopoverUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverUserCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +67,8 @@
 				76C7134C2914DC19003B1BD2 /* ViewController.swift */,
 				76C7135C2914DC91003B1BD2 /* EditController.swift */,
 				76C71360291543C7003B1BD2 /* PopoverbackgroundView.swift */,
-				76C7135E2914DCA1003B1BD2 /* FloatingView.swift */,
+				76C7135E2914DCA1003B1BD2 /* PopoverTableView.swift */,
+				76C7136229156C50003B1BD2 /* PopoverUserCell.swift */,
 				76C713512914DC1A003B1BD2 /* Assets.xcassets */,
 				76C713532914DC1A003B1BD2 /* LaunchScreen.storyboard */,
 				76C713562914DC1A003B1BD2 /* Info.plist */,
@@ -144,11 +147,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				76C7134D2914DC19003B1BD2 /* ViewController.swift in Sources */,
+				76C7136329156C50003B1BD2 /* PopoverUserCell.swift in Sources */,
 				76C7135D2914DC91003B1BD2 /* EditController.swift in Sources */,
 				76C71361291543C8003B1BD2 /* PopoverbackgroundView.swift in Sources */,
 				76C713492914DC19003B1BD2 /* AppDelegate.swift in Sources */,
 				76C7134B2914DC19003B1BD2 /* SceneDelegate.swift in Sources */,
-				76C7135F2914DCA1003B1BD2 /* FloatingView.swift in Sources */,
+				76C7135F2914DCA1003B1BD2 /* PopoverTableView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

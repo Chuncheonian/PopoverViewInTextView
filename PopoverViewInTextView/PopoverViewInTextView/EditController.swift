@@ -9,6 +9,12 @@ import UIKit
 
 final class EditController: UIViewController {
     
+    // MARK: - property
+    
+    private var keyboardHeight: CGFloat = 0
+    
+    // MARK: - ui component property
+    
     private lazy var cancelButton: UIBarButtonItem = {
         let barButton = UIBarButtonItem()
         barButton.title = "Cancel"
@@ -27,6 +33,7 @@ final class EditController: UIViewController {
     
     private lazy var textView: UITextView = {
         let textView = UITextView()
+        textView.backgroundColor = .clear
         textView.inputView = nil
         textView.font = .systemFont(ofSize: 17)
         textView.keyboardType = .default
@@ -36,7 +43,7 @@ final class EditController: UIViewController {
         return textView
     }()
     
-    private var keyboardHeight: CGFloat = 0
+    // MARK: - life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +53,8 @@ final class EditController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
+
+// MARK: - action
 
 extension EditController {
     @objc
@@ -93,6 +102,8 @@ extension EditController {
     }
 }
 
+// MARK: - UITextViewDelegate
+
 extension EditController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         guard let lastInputStr = (textView.text as NSString).substring(to: textView.selectedRange.location).last,
@@ -110,7 +121,7 @@ extension EditController: UITextViewDelegate {
         
         let firstRect = textView.firstRect(for: cursorTextRange)
         
-        let floatingView = FloatingView()
+        let floatingView = PopoverTableView()
         let floatingViewWidth: CGFloat = textView.frame.width * 0.84
         let floatingViewHeight: CGFloat = (textView.frame.height - keyboardHeight - sentenceHeight) * 0.48
         
@@ -151,17 +162,21 @@ extension EditController: UITextViewDelegate {
     }
 }
 
+// MARK: - UIPopoverPresentationControllerDelegate
+
 extension EditController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
 }
 
+// MARK: - setup ui
+
 extension EditController {
     private func setUpUI() {
         setUpView()
         setUpNavi()
-        setUpComponents()
+        setUpLayout()
     }
     
     private func setUpView() {
@@ -174,7 +189,7 @@ extension EditController {
         navigationItem.rightBarButtonItem = doneButton
     }
     
-    private func setUpComponents() {
+    private func setUpLayout() {
         view.addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

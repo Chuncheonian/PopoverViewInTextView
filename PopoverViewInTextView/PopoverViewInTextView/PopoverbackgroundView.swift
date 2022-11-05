@@ -8,17 +8,6 @@
 import UIKit
 
 final class PopoverbackgroundView: UIPopoverBackgroundView {
-//    static func assign(popover: UIPopoverPresentationController?) {
-//        guard let popover = popover else { return }
-//        popover.popoverBackgroundViewClass = SimplePopoverbackground.self
-//        popover.backgroundColor = UIColor.clear
-//        // As of iOS, non-toolbar anchor views will anchor top-left!
-//        guard #available(iOS 9.0, *) else { return }
-//        if let anchor = popover.sourceView, popover.sourceRect == CGRect() {
-//            popover.sourceRect = anchor.bounds
-//        }
-//    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.isOpaque = false
