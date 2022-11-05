@@ -168,6 +168,12 @@ extension EditController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
+    
+    /// popover 될 때
+    func prepareForPopoverPresentation(_ popoverPresentationController: UIPopoverPresentationController) {
+        let hapticGenerator = UIImpactFeedbackGenerator(style: .soft)
+        hapticGenerator.impactOccurred()
+    }
 }
 
 // MARK: - setup ui
